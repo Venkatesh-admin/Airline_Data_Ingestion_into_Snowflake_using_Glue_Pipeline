@@ -58,5 +58,5 @@ The pipeline is composed of the following components:
 
 - Set up an event trigger in S3 that activates the Glue job whenever a new file is uploaded.
 
-## Data Filtering Logic
+
 
