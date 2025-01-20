@@ -1,0 +1,45 @@
+create database airlines;
+
+-- create a dimension table
+CREATE TABLE airports_dim (
+    airport_id BIGINT,
+    city VARCHAR(100),
+    state VARCHAR(100),
+    name VARCHAR(200)
+);
+
+-- copy dimension table data from s3
+
+-- 1.create storage integration to establish connectio to aws s3
+create or replace storage integration s3_int
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = S3
+  ENABLED = TRUE 
+  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::529088268917:role/snowflakeaccessrole98'
+  STORAGE_ALLOWED_LOCATIONS = ('s3://airlines98/dimension_data/');
+   COMMENT = 'This an optional comment';
+
+Describe storage integration s3_int;
+
+-- 2. create stage to to specify the location of data
+create or replace stage aws_stage
+   url='s3://airlines98/dimension_data/'
+   storage_integration=s3_int;
+
+List @aws_stage;
+
+-- 3. create file format to match the data in the csv and with the table definition in snowflake
+CREATE OR REPLACE file format csv_fileformat
+    type = csv
+    field_delimiter = ','
+    skip_header = 1
+    null_if = ('NULL','null')
+    empty_field_as_null = TRUE;
+-- 4. copy command to copy the data
+COPY into airports_dim
+   from @aws_stage
+   file_format=airlines.public.csv_fileformat;
+   
+
+select * from airports_dim;
+
