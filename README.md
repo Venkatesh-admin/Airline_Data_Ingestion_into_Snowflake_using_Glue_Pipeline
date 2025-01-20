@@ -10,10 +10,11 @@ The pipeline is composed of the following components:
 - **AWS Glue**: A serverless ETL service that processes the incoming data and filters out flights with delays above a certain threshold.
 - **Snowflake**: A cloud data warehouse where the final processed data is stored for analysis and reporting.
 
-![alt text](architecture.png)
+
 
 ## Architecture
 
+![alt text](architecture.png)
 - Flight data is continuously uploaded to an S3 bucket.
 - AWS Glue jobs are triggered automatically when a new file is created in the S3 bucket.
 - The Glue job processes the data and applies transformations to filter out flights with significant delays.
